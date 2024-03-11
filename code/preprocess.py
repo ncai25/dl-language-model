@@ -19,7 +19,28 @@ def get_data(train_file, test_file):
     # Hint: You might not use all of the initialized variables depending on how you implement preprocessing. 
     vocabulary, vocab_size, train_data, test_data = {}, 0, [], []
 
+    def load_data(file_path): 
+        with open(file_path, 'r') as file: 
+            data = file.read().lower().split()
+        return data
+
     ## TODO: Implement pre-processing for the data files. See notebook for help on this.
+    train_words = load_data(train_file)
+    test_words = load_data(test_file)
+
+    unique_vocab = sorted(set(train_data))
+    vocabulary = {w: i for i, w in enumerate(unique_vocab)}
+
+    inverse_vocabulary = {w: i for i, w in enumerate(unique_vocab)}
+
+    train_data = []
+    test_data = []
+    for w in train_words: 
+        train_data.append(inverse_vocabulary[w])
+
+    for w in test_words: 
+        test_data.append(inverse_vocabulary[w])
+
 
     # Sanity Check, make sure there are no new words in the test data.
     assert reduce(lambda x, y: x and (y in vocabulary), test_data)
