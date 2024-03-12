@@ -33,17 +33,15 @@ def get_data(train_file, test_file):
 
     inverse_vocabulary = {w: i for i, w in enumerate(unique_vocab)}
 
+
+    train_data = [inverse_vocabulary[w] for w in train_words]
+    test_data = [inverse_vocabulary[w] for w in test_words if w in vocabulary]
     # train_data = []
     # test_data = []
     # for w in train_words: 
     #     train_data.append(inverse_vocabulary[w])
-
     # for w in test_words: 
     #     test_data.append(inverse_vocabulary[w])
-
-    train_data = [inverse_vocabulary[w] for w in train_words]
-    test_data = [inverse_vocabulary[w] for w in test_words if w in vocabulary]
-
 
     # Sanity Check, make sure there are no new words in the test data.
     assert reduce(lambda x, y: x and (y in vocabulary), test_data)

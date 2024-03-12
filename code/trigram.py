@@ -97,9 +97,19 @@ def get_text_model(vocab):
 
 def main():
 
+
     ## TODO: Pre-process and vectorize the data
     ##   HINT: You might be able to find this somewhere...
-    vocab = None
+
+    # AUTOGRADER_TRAIN_FILE = '../data/train'
+    # AUTOGRADER_TEST_FILE = '../data/test'
+
+    LOCAL_TRAIN_FILE = '/Users/noracai/Documents/CS1470/homework-4p-language-models-norafk/data/train.txt'
+    LOCAL_TEST_FILE = '/Users/noracai/Documents/CS1470/homework-4p-language-models-norafk/data/test.txt'
+
+    train_data, test_data, vocabulary = get_data(LOCAL_TRAIN_FILE, LOCAL_TEST_FILE)
+
+    vocab = vocabulary
 
     X0, Y0  = None, None
     X1, Y1  = None, None
