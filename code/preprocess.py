@@ -29,17 +29,20 @@ def get_data(train_file, test_file):
     test_words = load_data(test_file)
 
     unique_vocab = sorted(set(train_data))
-    vocabulary = {w: i for i, w in enumerate(unique_vocab)}
+    vocabulary = {i: i for i, w in enumerate(unique_vocab)}
 
     inverse_vocabulary = {w: i for i, w in enumerate(unique_vocab)}
 
-    train_data = []
-    test_data = []
-    for w in train_words: 
-        train_data.append(inverse_vocabulary[w])
+    # train_data = []
+    # test_data = []
+    # for w in train_words: 
+    #     train_data.append(inverse_vocabulary[w])
 
-    for w in test_words: 
-        test_data.append(inverse_vocabulary[w])
+    # for w in test_words: 
+    #     test_data.append(inverse_vocabulary[w])
+
+    train_data = [inverse_vocabulary[w] for w in train_words]
+    test_data = [inverse_vocabulary[w] for w in test_words if w in vocabulary]
 
 
     # Sanity Check, make sure there are no new words in the test data.
@@ -53,5 +56,9 @@ def get_data(train_file, test_file):
     train_data = list(map(lambda x: vocabulary[x], train_data))
     test_data  = list(map(lambda x: vocabulary[x], test_data))
 
-    # print("train_data", train_data)
+    print("train_data", train_data)
     return train_data, test_data, vocabulary
+
+
+
+
