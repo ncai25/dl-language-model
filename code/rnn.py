@@ -22,17 +22,47 @@ class MyRNN(tf.keras.Model):
         self.rnn_size = rnn_size
         self.embed_size = embed_size
 
+
         ## TODO:
         ## - Define an embedding component to embed the word indices into a trainable embedding space.
         ## - Define a recurrent component to reason with the sequence of data. 
         ## - You may also want a dense layer near the end...    
+        self.embedding_layer = tf.keras.layers.Embedding(vocab_size, embed_size)
+        self.rnn_layer = tf.keras.layers.LSTM(rnn_size, return_sequences=True, return_state=False)
+        
+
+        # # return_state= True, last hidden layer and last cell state 
+        # #  return_sequences = True, whole sequence of outputs. shape [batch, timesteps, embedding]
+
+        self.output_layer = tf.keras.layers.Dense(vocab_size, activation='softmax') # tk
+
 
     def call(self, inputs):
         """
         - You must use an embedding layer as the first layer of your network (i.e. tf.nn.embedding_lookup or tf.keras.layers.Embedding)
         - You must use an LSTM or GRU as the next layer.
         """
-        return inputs
+        X_RNN_embedding = self.embedding_layer(inputs)
+        rnn_output = self.rnn_layer(X_RNN_embedding, initial_state = None)
+        logits = self.output_layer(rnn_output)
+
+        print(f'embedding shape, {X_RNN_embedding.shape}')
+        print(f'rnn_output shape, {rnn_output.shape}')
+        # [batch, timesteps, rnn_size]
+
+        return logits
+    
+    #  def call(self, inputs):
+    #     X_RNN_embedding = self.embedding_layer(inputs)
+    #     rnn_output, _, _ = self.rnn_layer(X_RNN_embedding)  # We don't need the state for this problem
+    #     logits = self.output_layer(rnn_output)
+    #     return logits[:, :-1, :]  # Exclude the last timestep prediction
+    
+        # X_RNN_embedding = tf.reshape(X_RNN_embedding, (-1, 2*self.embed_size)) # tk 
+
+        # self.rnn_layer.build(X_RNN_embedding)
+        # lstm_weights = self.rnn_layer.get_weights()
+        # self.rnn_layer.set_weights(lstm_weights)
 
     ##########################################################################################
 
@@ -62,24 +92,28 @@ class MyRNN(tf.keras.Model):
 
 
 #########################################################################################
+def perplexity(y_true, y_pred):
+    sparse_cross_entropy = tf.keras.losses.sparse_categorical_crossentropy(y_true, y_pred, from_logits=False)
+    avg_cross_entropy = tf.reduce_mean(sparse_cross_entropy)
+    return tf.exp(avg_cross_entropy)
 
 def get_text_model(vocab):
     '''
     Tell our autograder how to train and test your model!
     '''
-
     ## TODO: Set up your implementation of the RNN
-
     ## Optional: Feel free to change or add more arguments!
     model = MyRNN(len(vocab))
 
     ## TODO: Define your own loss and metric for your optimizer
-    loss_metric = None 
-    acc_metric  = None
+    loss_metric = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=False)
+    acc_metric  = perplexity
 
     ## TODO: Compile your model using your choice of optimizer, loss, and metrics
+    optimizer = tf.keras.optimizers.Adam(learning_rate=0.001)    
+
     model.compile(
-        optimizer=None, 
+        optimizer=optimizer, 
         loss=loss_metric, 
         metrics=[acc_metric],
     )
@@ -101,10 +135,24 @@ def main():
     ##   from train_x and test_x. You also need to drop the first element from train_y and test_y.
     ##   If you don't do this, you will see very, very small perplexities.
     ##   HINT: You might be able to find this somewhere...
-    vocab = None
 
-    X0, Y0  = None, None
-    X1, Y1  = None, None
+
+    LOCAL_TRAIN_FILE = '/Users/noracai/Documents/CS1470/homework-4p-language-models-norafk/data/train.txt'
+    LOCAL_TEST_FILE = '/Users/noracai/Documents/CS1470/homework-4p-language-models-norafk/data/test.txt'
+    
+    train_id, test_id, vocabulary = get_data(LOCAL_TRAIN_FILE, LOCAL_TEST_FILE)
+
+    ## Process the data
+    def process_trigram_data(data):
+        X = np.array(data[:-1])
+        Y = np.array(data[2:])
+        X = np.column_stack((X[:-1], X[1:]))
+        return X, Y
+
+    X0, Y0 = process_trigram_data(train_id)
+    X1, Y1 = process_trigram_data(test_id)
+
+    vocab = vocabulary
 
     ## TODO: Get your model that you'd like to use
     args = get_text_model(vocab)

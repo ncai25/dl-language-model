@@ -20,7 +20,7 @@ class MyTrigram(tf.keras.Model):
         self.embed_size = embed_size
         self.hidden_size = hidden_size
 
-        self.embedding_layer = tf.keras.layers.Embedding(vocab_size, embed_size)
+        self.embedding_layer = tf.keras.layers.Embedding(input_dim=vocab_size, output_dim=embed_size)
         self.output_layer = tf.keras.layers.Dense(vocab_size, activation='softmax') # tk vocab_size
 
         ## TODO: define your trainable variables and/or layers here. This should include an
@@ -33,12 +33,12 @@ class MyTrigram(tf.keras.Model):
         :param inputs: word ids of shape (batch_size, 2)
         :return: logits: The batch element probabilities as a tensor of shape (batch_size, vocab_size)
         """
+        embedding = self.embedding_layer(inputs)
+        embedding = tf.reshape(embedding, (-1, 2*self.embed_size)) # tk 
+        #(batch size (-1), words in single input*dimensions for each word)
+        logits = self.output_layer(embedding)
 
-        embedding_layer = self.embedding_layer(inputs)
-        embedding_layer = tf.reshape(embedding_layer, (-1, 2*self.embed_size))
-        logits = self.output_layer(embedding_layer)
-
-        print(f"logits shape, {tf.shape(logits)}")
+        # print(f"logits shape, {tf.shape(logits)}")
 
         return logits
 
@@ -69,7 +69,6 @@ class MyTrigram(tf.keras.Model):
 def perplexity(y_true, y_pred):
     sparse_cross_entropy = tf.keras.losses.sparse_categorical_crossentropy(y_true, y_pred, from_logits=False)
     avg_cross_entropy = tf.reduce_mean(sparse_cross_entropy)
-    # print(f'y_true = {y_true}, y_pred= {y_pred}')
     return tf.exp(avg_cross_entropy)
 
 def get_text_model(vocab):
@@ -83,7 +82,6 @@ def get_text_model(vocab):
     ## TODO: Define your own loss and metric for your optimizer
     loss_metric = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=False)
     acc_metric  = perplexity
-    
 
     # Sanity check for the perplexity calculation
     random_pred = tf.Variable(np.array([[0.1, 0.3, 0.5, 0.1], 
@@ -93,7 +91,7 @@ def get_text_model(vocab):
     random_true = tf.Variable(np.array([2,0,1,3]))
     np.testing.assert_almost_equal(np.mean(acc_metric(random_true, random_pred)), 2.4446151121745054, decimal=4)
 
-    print("Passed another Sanity check")
+    # print("Passed another Sanity check")
     ## TODO: Compile your model using your choice of optimizer, loss, and metrics
     optimizer = tf.keras.optimizers.Adam(learning_rate=0.001)    
     model.compile(
@@ -141,28 +139,14 @@ def main():
     assert X0.shape[0] == Y0.shape[0]
     assert X1.shape[0] == Y1.shape[0]
 
-
-
-    print("Passed Sanity Check!")
+    # print("Passed Sanity Check!")
     # TODO: Implement get_text_model to return the model that you want to use. 
 
     #- Reshape the input and output data into the Trigram shape
     args = get_text_model(vocab)
     # args = get_text_model(vocab, hidden_size=150, embed_size=128)
-    print("X0 shape:", X0.shape)
-    print("args.batch_size:", args.batch_size)
-
-#     def reshape_to_trigram(data):
-#         trigram_input = []
-#         trigram_output = []
-#         for sequence in data:
-#             for i in range(len(sequence) - 2):
-#                 trigram_input.append((sequence[i], sequence[i+1]))
-#                 trigram_output.append(sequence[i+2])
-#         return trigram_input, trigram_output
-
-# # Example usage:
-#     X_trigram, Y_trigram = reshape_to_trigram(train_data)
+    # print("X0 shape:", X0.shape)
+    # print("args.batch_size:", args.batch_size)
 
     args.model.fit(
         X0, Y0,
@@ -170,8 +154,6 @@ def main():
         batch_size=args.batch_size,
         validation_data=(X1, Y1)
     )
-
-    
 
     ## Feel free to mess around with the word list to see the model try to generate sentences
     words = 'speak to this brown deep learning student'.split()
