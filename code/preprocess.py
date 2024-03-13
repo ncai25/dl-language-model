@@ -14,7 +14,7 @@ def get_data(train_file, test_file):
     :return: Tuple of:
         train (1-d list or array with training words in vectorized/id form), 
         test (1-d list or array with testing words in vectorized/id form), 
-        vocabulary (Dict containg index->word mapping)
+        vocabulary (Dict containg word->index mapping)
     """
     # Hint: You might not use all of the initialized variables depending on how you implement preprocessing. 
     vocabulary, vocab_size, train_data, test_data = {}, 0, [], []
@@ -25,17 +25,16 @@ def get_data(train_file, test_file):
         return data
 
     ## TODO: Implement pre-processing for the data files. See notebook for help on this.
-    train_words = load_data(train_file)
-    test_words = load_data(test_file)
+    train_data = load_data(train_file)
+    test_data = load_data(test_file)
 
     unique_vocab = sorted(set(train_data))
-    vocabulary = {i: i for i, w in enumerate(unique_vocab)}
 
-    inverse_vocabulary = {w: i for i, w in enumerate(unique_vocab)}
+    vocabulary = {w: i for i, w in enumerate(unique_vocab)}
 
 
-    train_data = [inverse_vocabulary[w] for w in train_words]
-    test_data = [inverse_vocabulary[w] for w in test_words if w in vocabulary]
+    # train_data = [vocabulary[w] for w in train_data]
+    # test_data = [vocabulary[w] for w in test_data if w in vocabulary]
     # train_data = []
     # test_data = []
     # for w in train_words: 
@@ -45,6 +44,9 @@ def get_data(train_file, test_file):
 
     # Sanity Check, make sure there are no new words in the test data.
     assert reduce(lambda x, y: x and (y in vocabulary), test_data)
+
+    # train_data = [vocabulary[w] for w in train_data]
+    # test_data = [vocabulary[w] for w in test_data if w in vocabulary]
     
     # Uncomment the sanity check below if you end up using vocab_size
     # Sanity check, make sure that all values are withi vocab size
@@ -54,7 +56,7 @@ def get_data(train_file, test_file):
     train_data = list(map(lambda x: vocabulary[x], train_data))
     test_data  = list(map(lambda x: vocabulary[x], test_data))
 
-    print("train_data", train_data)
+    # print("train_data", train_data)
     return train_data, test_data, vocabulary
 
 

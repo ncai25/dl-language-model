@@ -20,6 +20,9 @@ class MyTrigram(tf.keras.Model):
         self.embed_size = embed_size
         self.hidden_size = hidden_size
 
+        self.embedding_layer = tf.keras.layers.Embedding(vocab_size, embed_size)
+        self.output_layer = tf.keras.layers.Dense(vocab_size, activation='softmax') # tk vocab_size
+
         ## TODO: define your trainable variables and/or layers here. This should include an
         ## embedding component, and any other variables/layers you require.
 
@@ -30,7 +33,10 @@ class MyTrigram(tf.keras.Model):
         :param inputs: word ids of shape (batch_size, 2)
         :return: logits: The batch element probabilities as a tensor of shape (batch_size, vocab_size)
         """
-        return inputs
+
+        embedding_layer = self.embedding_layer(inputs)
+        logits = self.output_layer(embedding_layer)
+        return logits
 
     def generate_sentence(self, word1, word2, length, vocab):
         """
@@ -56,20 +62,21 @@ class MyTrigram(tf.keras.Model):
 
 
 #########################################################################################
+def perplexity(y_true, y_pred):
+    sparse_cross_entropy = tf.keras.losses.sparse_categorical_crossentropy(y_true, y_pred)
+    avg_cross_entropy = tf.reduce_mean(sparse_cross_entropy)
+    return tf.exp(avg_cross_entropy)
 
 def get_text_model(vocab):
     '''
     Tell our autograder how to train and test your model!
     '''
-
-    ## TODO: Set up your implementation of the RNN
-
     ## Optional: Feel free to change or add more arguments!
     model = MyTrigram(len(vocab))
 
     ## TODO: Define your own loss and metric for your optimizer
-    loss_metric = None 
-    acc_metric  = None
+    loss_metric = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=False)
+    acc_metric  = perplexity
 
     # Sanity check for the perplexity calculation
     random_pred = tf.Variable(np.array([[0.1, 0.3, 0.5, 0.1], 
@@ -79,12 +86,14 @@ def get_text_model(vocab):
     random_true = tf.Variable(np.array([2,0,1,3]))
     np.testing.assert_almost_equal(np.mean(acc_metric(random_true, random_pred)), 2.4446151121745054, decimal=4)
 
+    print("Passed another Sanity check")
     ## TODO: Compile your model using your choice of optimizer, loss, and metrics
     model.compile(
-        optimizer=None, 
+        optimizer=tf.keras.optimizers.Adam(), 
         loss=loss_metric, 
         metrics=[acc_metric],
     )
+    print("compiled!")
 
     return SimpleNamespace(
         model = model,
@@ -93,11 +102,10 @@ def get_text_model(vocab):
     )
 
 
+
 #########################################################################################
 
 def main():
-
-
     ## TODO: Pre-process and vectorize the data
     ##   HINT: You might be able to find this somewhere...
 
@@ -106,13 +114,22 @@ def main():
 
     LOCAL_TRAIN_FILE = '/Users/noracai/Documents/CS1470/homework-4p-language-models-norafk/data/train.txt'
     LOCAL_TEST_FILE = '/Users/noracai/Documents/CS1470/homework-4p-language-models-norafk/data/test.txt'
+    
+    train_id, test_id, vocabulary = get_data(LOCAL_TRAIN_FILE, LOCAL_TEST_FILE)
 
-    train_data, test_data, vocabulary = get_data(LOCAL_TRAIN_FILE, LOCAL_TEST_FILE)
+    ## Process the data
+    def process_trigram_data(data):
+        X = np.array(data[:-1])
+        Y = np.array(data[2:])
+        X = np.column_stack((X[:-1], X[1:]))
+        return X, Y
+
+    X0, Y0 = process_trigram_data(train_id)
+    X1, Y1 = process_trigram_data(test_id)
+
+    print(f"X0 = {X0}, Y0 = {Y0}")
 
     vocab = vocabulary
-
-    X0, Y0  = None, None
-    X1, Y1  = None, None
 
     # Sanity Check!
     assert X0.shape[1] == 2
@@ -120,6 +137,7 @@ def main():
     assert X0.shape[0] == Y0.shape[0]
     assert X1.shape[0] == Y1.shape[0]
 
+    print("Passed Sanity Check!")
     # TODO: Implement get_text_model to return the model that you want to use. 
     args = get_text_model(vocab)
 

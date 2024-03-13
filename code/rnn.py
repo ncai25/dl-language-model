@@ -45,7 +45,7 @@ class MyRNN(tf.keras.Model):
 
         first_string = word1
         first_word_index = vocab[word1]
-        next_input = [[first_word_index]]
+        next_input = np.array([[first_word_index]])
         text = [first_string]
 
         for i in range(length):
@@ -56,7 +56,7 @@ class MyRNN(tf.keras.Model):
             out_index = np.random.choice(top_n,p=n_logits)
 
             text.append(reverse_vocab[out_index])
-            next_input = [[out_index]]
+            next_input = np.array([[out_index]])
 
         print(" ".join(text))
 
