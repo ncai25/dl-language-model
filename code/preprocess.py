@@ -21,7 +21,7 @@ def get_data(train_file, test_file):
 
     def load_data(file_path): 
         with open(file_path, 'r') as file: 
-            data = file.read().lower().split()
+            data = file.read().split()
         return data
 
     ## TODO: Implement pre-processing for the data files. See notebook for help on this.
@@ -35,18 +35,9 @@ def get_data(train_file, test_file):
 
     # train_data = [vocabulary[w] for w in train_data]
     # test_data = [vocabulary[w] for w in test_data if w in vocabulary]
-    # train_data = []
-    # test_data = []
-    # for w in train_words: 
-    #     train_data.append(inverse_vocabulary[w])
-    # for w in test_words: 
-    #     test_data.append(inverse_vocabulary[w])
 
     # Sanity Check, make sure there are no new words in the test data.
     assert reduce(lambda x, y: x and (y in vocabulary), test_data)
-
-    # train_data = [vocabulary[w] for w in train_data]
-    # test_data = [vocabulary[w] for w in test_data if w in vocabulary]
     
     # Uncomment the sanity check below if you end up using vocab_size
     # Sanity check, make sure that all values are withi vocab size

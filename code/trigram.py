@@ -127,8 +127,6 @@ def main():
     X0, Y0 = process_trigram_data(train_id)
     X1, Y1 = process_trigram_data(test_id)
 
-    print(f"X0 = {X0}, Y0 = {Y0}")
-
     vocab = vocabulary
 
     # Sanity Check!
@@ -147,6 +145,7 @@ def main():
         batch_size=args.batch_size,
         validation_data=(X1, Y1)
     )
+
 
     ## Feel free to mess around with the word list to see the model try to generate sentences
     words = 'speak to this brown deep learning student'.split()
