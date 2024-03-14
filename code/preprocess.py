@@ -21,7 +21,7 @@ def get_data(train_file, test_file):
 
     def load_data(file_path): 
         with open(file_path, 'r') as file: 
-            data = file.read().split()
+            data = file.read().lower().split()
         return data
 
     ## TODO: Implement pre-processing for the data files. See notebook for help on this.

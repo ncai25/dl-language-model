@@ -106,7 +106,6 @@ def get_text_model(vocab):
     ## Optional: Feel free to change or add more arguments!
     model = MyRNN(len(vocab))
 
-    ## TODO: Define your own loss and metric for your optimizer
     loss_metric = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=False)
     acc_metric  = perplexity
 
@@ -143,19 +142,8 @@ def main():
    
     window_size = 20 
     offset = random.randint(0, window_size - 1)
-    print(offset)
+    # print(offset)
 
-# example_sentence_tokenized_array = np.array(example_sentence_tokenized)
-# remainder = (len(example_sentence_tokenized_array) - 1)%window_size
-# example_sentence_tokenized_array = example_sentence_tokenized_array[:-remainder]
-
-
-# # 2. Define X_RNN and y_RNN  
-# X_RNN = example_sentence_tokenized_array[:-1].reshape(-1, 4)
-# # -1 in reshape means whatever it takes to flatten
-# y_RNN = example_sentence_tokenized_array[1:].reshape(-1, 4)
-
-    ## Process the data
     def process_rnn_data(data):
         offset_data = np.array(data[offset:])
         remainder = (len(offset_data)-1)%window_size
@@ -163,11 +151,13 @@ def main():
         Y = tf.reshape(offset_data[:-remainder][1:], (-1, window_size))
 
         return X, Y
+    
+
+
 
     X0, Y0 = process_rnn_data(train_id)
     print(f"X_RNN shape = {X0.shape}")
     print(f"Y_RNN shape = {Y0.shape}")
-
 
     X1, Y1 = process_rnn_data(test_id)
 
@@ -178,8 +168,6 @@ def main():
     #     window_X0 = X0_offset[i:i+window_size]
     #     window_Y0 = Y0_offset[i:i+window_size]
         
-
-
     # print(X0.shape)
 
     # remainder_x0 = (len(X0)-1)%window_size
