@@ -30,7 +30,7 @@ class MyRNN(tf.keras.Model):
         ## - You may also want a dense layer near the end...    
         self.embedding_layer = tf.keras.layers.Embedding(vocab_size, embed_size)
         self.rnn_layer = tf.keras.layers.LSTM(rnn_size, return_sequences=True, return_state=False)
-        # tk return sequence because we need timesteps - why
+        # return sequence because we need timesteps - why
         # `timesteps` is basically our `window`. - we treat a sequence of words as a time-series data.
         
         # # return_state= True, last hidden layer and last cell state 
@@ -54,7 +54,7 @@ class MyRNN(tf.keras.Model):
 
         return logits
     
-        # X_RNN_embedding = tf.reshape(X_RNN_embedding, (-1, 2*self.embed_size)) # tk 
+        # X_RNN_embedding = tf.reshape(X_RNN_embedding, (-1, 2*self.embed_size)) # bc embedding in trigram is like 2 colomns
 
         # self.rnn_layer.build(X_RNN_embedding)
         # lstm_weights = self.rnn_layer.get_weights()
@@ -123,7 +123,7 @@ def get_text_model(vocab):
 
 #########################################################################################
 
-def main(): #tk i passed gradescope but not notebook (epoch increased)
+def main(): 
 
     ## TODO: Pre-process and vectorize the data
     ##   HINT: Please note that you are predicting the next word at each timestep, so you want to remove the last element
@@ -168,37 +168,6 @@ def main(): #tk i passed gradescope but not notebook (epoch increased)
     # print(f"Y_RNN shape = {Y0.shape}")
 
     vocab = vocabulary
-    
-    # # # Divide the offset training corpus into windows of the specified window size
-    # for i in range(0, len(X0_offset) - window_size, window_size):
-    #     window_X0 = X0_offset[i:i+window_size]
-    #     window_Y0 = Y0_offset[i:i+window_size]
-        
-    # print(X0.shape)
-
-    # remainder_x0 = (len(X0)-1)%window_size
-    # X0 = X0[:-remainder_x0]
-    # X0 = tf.reshape(X0[:-1], (-1, window_size))
-    # print(X0.shape)
-
-
-    # print(Y0.shape)
-
-    # remainder_y0 = (len(Y0)-1)%window_size
-    # Y0 = Y0[:-remainder_y0]
-    # print(Y0.shape)
-
-    # Y0 = tf.reshape(Y0[1:], (-1, window_size))
-    # print(Y0.shape)
-
-    # remainder_x1 = (len(X1)-1)%window_size
-    # X1 = X1[:-remainder_x1]
-    # X1 = tf.reshape(X1[:-1], (-1, window_size))
-
-    # remainder_y1= (len(Y1)-1)%window_size
-    # Y1 = Y1[:-remainder_y1]
-    # Y1 = tf.reshape(Y1[1:], (-1, window_size))
-
 
     ## TODO: Get your model that you'd like to use
     args = get_text_model(vocab)
