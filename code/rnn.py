@@ -120,7 +120,7 @@ def get_text_model(vocab):
 
     return SimpleNamespace(
         model = model,
-        epochs = 1,
+        epochs = 10,
         batch_size = 100,
     )
 
@@ -144,22 +144,23 @@ def main():
     offset = random.randint(0, window_size - 1)
     # print(offset)
 
+    train_id = np.array(train_id)
+    test_id  = np.array(test_id)
+
     def process_rnn_data(data):
-        offset_data = np.array(data[offset:])
+        offset_data = (data[offset:])
         remainder = (len(offset_data)-1)%window_size
         X = tf.reshape(offset_data[:-remainder][:-1], (-1, window_size))
         Y = tf.reshape(offset_data[:-remainder][1:], (-1, window_size))
 
         return X, Y
-    
-
 
 
     X0, Y0 = process_rnn_data(train_id)
+    X1, Y1 = process_rnn_data(test_id)
+
     print(f"X_RNN shape = {X0.shape}")
     print(f"Y_RNN shape = {Y0.shape}")
-
-    X1, Y1 = process_rnn_data(test_id)
 
     vocab = vocabulary
     
