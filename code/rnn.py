@@ -30,12 +30,13 @@ class MyRNN(tf.keras.Model):
         ## - You may also want a dense layer near the end...    
         self.embedding_layer = tf.keras.layers.Embedding(vocab_size, embed_size)
         self.rnn_layer = tf.keras.layers.LSTM(rnn_size, return_sequences=True, return_state=False)
+        # tk return sequence because we need timesteps - why
+        # `timesteps` is basically our `window`. - we treat a sequence of words as a time-series data.
         
-
         # # return_state= True, last hidden layer and last cell state 
         # #  return_sequences = True, whole sequence of outputs. shape [batch, timesteps, embedding]
 
-        self.output_layer = tf.keras.layers.Dense(vocab_size, activation='softmax') # tk
+        self.output_layer = tf.keras.layers.Dense(vocab_size, activation='softmax') 
 
 
     def call(self, inputs):
@@ -44,20 +45,14 @@ class MyRNN(tf.keras.Model):
         - You must use an LSTM or GRU as the next layer.
         """
         X_RNN_embedding = self.embedding_layer(inputs)
-        rnn_output = self.rnn_layer(X_RNN_embedding)
+        rnn_output = self.rnn_layer(X_RNN_embedding) # we don't need to reshape here unlike trigram tk
         logits = self.output_layer(rnn_output)
 
         # print(f'embedding shape, {X_RNN_embedding.shape}')
         # print(f'rnn_output shape, {rnn_output.shape}')
         # [batch, timesteps, rnn_size]
 
-        return logits  # tk
-    
-    #  def call(self, inputs):
-    #     X_RNN_embedding = self.embedding_layer(inputs)
-    #     rnn_output, _, _ = self.rnn_layer(X_RNN_embedding)  # We don't need the state for this problem
-    #     logits = self.output_layer(rnn_output)
-    #     return logits[:, :-1, :]  # Exclude the last timestep prediction
+        return logits
     
         # X_RNN_embedding = tf.reshape(X_RNN_embedding, (-1, 2*self.embed_size)) # tk 
 
@@ -128,7 +123,7 @@ def get_text_model(vocab):
 
 #########################################################################################
 
-def main():
+def main(): #tk i passed gradescope but not notebook (epoch increased)
 
     ## TODO: Pre-process and vectorize the data
     ##   HINT: Please note that you are predicting the next word at each timestep, so you want to remove the last element
@@ -141,8 +136,19 @@ def main():
     train_id, test_id, vocabulary = get_data(LOCAL_TRAIN_FILE, LOCAL_TEST_FILE)
    
     window_size = 20 
-    offset = random.randint(0, window_size - 1)
+    offset = random.randint(0, window_size - 1) # randomly pick one value
     # print(offset)
+
+# - In practice we draw a **random integer between 0 and the (window size-1)** for every epoch
+# - Then we remove the random integer number of words from the beginning of the training corpus (= offset)
+# - Depending on the value of the random integer,
+#   - Different words end up not being included in `X` and `y` from one epoch to another
+#   - `X` and `y` end up having different number of windows from one epoch to another
+#   - For every epoch, the model is trained with similar but slightly different sets of windows 
+    
+
+# # X_RNN_embedding = tf.reshape(X_RNN_embedding, (-1, 2*self.embed_size)) # tk 
+    # didn't reshape in call but here
 
     train_id = np.array(train_id)
     test_id  = np.array(test_id)
@@ -150,16 +156,16 @@ def main():
     def process_rnn_data(data):
         offset_data = (data[offset:])
         remainder = (len(offset_data)-1)%window_size
-        X = tf.reshape(offset_data[:-remainder][:-1], (-1, window_size))
-        Y = tf.reshape(offset_data[:-remainder][1:], (-1, window_size))
+        X = tf.reshape(offset_data[:-remainder][:-1], (-1, window_size)) # remove the last elm
+        Y = tf.reshape(offset_data[:-remainder][1:], (-1, window_size)) # drop first elm
 
         return X, Y
 
     X0, Y0 = process_rnn_data(train_id)
     X1, Y1 = process_rnn_data(test_id)
 
-    print(f"X_RNN shape = {X0.shape}")
-    print(f"Y_RNN shape = {Y0.shape}")
+    # print(f"X_RNN shape = {X0.shape}")
+    # print(f"Y_RNN shape = {Y0.shape}")
 
     vocab = vocabulary
     
@@ -175,7 +181,6 @@ def main():
     # X0 = tf.reshape(X0[:-1], (-1, window_size))
     # print(X0.shape)
 
-    # # X_RNN_embedding = tf.reshape(X_RNN_embedding, (-1, 2*self.embed_size)) # tk 
 
     # print(Y0.shape)
 
