@@ -20,7 +20,6 @@ RNN Model Statistics:
  - 3: perp=107.2805,	loss=4.6717 	| Val 103.109	4.63
  - 4: perp=94.2439,	loss=4.5425 	| Val 93.741	4.534
  - 5: perp=85.7861,	loss=4.4479 	| Val 86.883	4.457
- - 6: perp=79.6451,	loss=4.3743 	| Val 82.158	4.401
  > Testing: 
  - perp=82.158,	loss=4.4012
  > Total Time: 644.304 sec
