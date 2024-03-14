@@ -51,7 +51,7 @@ class MyRNN(tf.keras.Model):
         # print(f'rnn_output shape, {rnn_output.shape}')
         # [batch, timesteps, rnn_size]
 
-        return logits
+        return logits  # tk
     
     #  def call(self, inputs):
     #     X_RNN_embedding = self.embedding_layer(inputs)
@@ -120,7 +120,7 @@ def get_text_model(vocab):
 
     return SimpleNamespace(
         model = model,
-        epochs = 10,
+        epochs = 7,
         batch_size = 100,
     )
 
@@ -154,7 +154,6 @@ def main():
         Y = tf.reshape(offset_data[:-remainder][1:], (-1, window_size))
 
         return X, Y
-
 
     X0, Y0 = process_rnn_data(train_id)
     X1, Y1 = process_rnn_data(test_id)
