@@ -14,14 +14,10 @@ Trigram Model Statistics:
 
 RNN Model Statistics:
  > Training: 
- - 0: perp=395.8616,	loss=5.834 	| Val 240.5	5.479
- - 1: perp=182.4724,	loss=5.1968 	| Val 154.021	5.032
- - 2: perp=132.972,	loss=4.8852 	| Val 119.916	4.781
- - 3: perp=107.2805,	loss=4.6717 	| Val 103.109	4.63
- - 4: perp=94.2439,	loss=4.5425 	| Val 93.741	4.534
- - 5: perp=85.7861,	loss=4.4479 	| Val 86.883	4.457
- > Testing: 
+ - 0: perp=322.6649,	loss=5.0482 	| Val 157.3758
+ - 1: perp=127.3712,	loss=4.6884 	| Val 110.0698
+ - 2: perp=96.5015,	loss=4.5090 	| Val  92.1912
+ - 3: perp=82.6156,	loss=4.4003 	| Val  82.8567 > Testing: 
  - perp=82.158,	loss=4.4012
- > Total Time: 644.304 sec
 
-With 6 epochs, test perplexity is 86 (<100) and can run under 10 min
+With 4 epochs, test perplexity is 82.8567 (<100) and can run under 10 min
