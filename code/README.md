@@ -35,3 +35,8 @@ With 4 epochs, test perplexity is 82.8567 (<100) and can run under 10 min
 - RNN: Trained a recurrent neural network to predict word[i] = f(word[0], …, word[i-1]).
 
 [LSTM/GRU] Created a recurrent layer from scratch (with some starter code) using a recurrent kernel.
+
+
+## Handout 
+
+https://hackmd.io/@BrownDeepLearningS24/hw4p
