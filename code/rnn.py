@@ -23,7 +23,6 @@ class MyRNN(tf.keras.Model):
         self.rnn_size = rnn_size
         self.embed_size = embed_size
 
-
         ## TODO:
         ## - Define an embedding component to embed the word indices into a trainable embedding space.
         ## - Define a recurrent component to reason with the sequence of data. 

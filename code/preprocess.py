@@ -32,7 +32,6 @@ def get_data(train_file, test_file):
 
     vocabulary = {w: i for i, w in enumerate(unique_vocab)}
 
-
     # train_data = [vocabulary[w] for w in train_data]
     # test_data = [vocabulary[w] for w in test_data if w in vocabulary]
 

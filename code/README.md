@@ -1,5 +1,10 @@
-# hw4-s24-template
+# Language Model Project: Trigram + RNN
 
+## Overview
+Built a Language Model to explore word embedding schemas and minimize NLP losses through word prediction tasks.
+
+
+## Results
 
 My accuracy/perplexity 
 
@@ -21,3 +26,12 @@ RNN Model Statistics:
  - perp=82.158,	loss=4.4012
 
 With 4 epochs, test perplexity is 82.8567 (<100) and can run under 10 min
+
+## Tasks
+
+[Word Prediction] Builted a language model that learns to generate sentences by training the model to predict a next word conditioned on a subset of previous words.
+
+- Trigram: Trained a supervised formulation to predict word[i] = f(word[i-2], word[i-1]).
+- RNN: Trained a recurrent neural network to predict word[i] = f(word[0], …, word[i-1]).
+
+[LSTM/GRU] Created a recurrent layer from scratch (with some starter code) using a recurrent kernel.

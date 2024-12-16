@@ -38,8 +38,6 @@ class MyTrigram(tf.keras.Model):
         #(batch size (-1), words in single input*dimensions for each word)
         logits = self.output_layer(embedding)
 
-        # print(f"logits shape, {tf.shape(logits)}")
-
         return logits
 
     def generate_sentence(self, word1, word2, length, vocab):
