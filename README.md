@@ -25,7 +25,7 @@ RNN Model Statistics:
  - 3: perp=82.6156,	loss=4.4003 	| Val  82.8567 > Testing: 
  - perp=82.158,	loss=4.4012
 
-With 4 epochs, test perplexity is 82.8567 (<100) and can run under 10 min
+With 4 epochs, test perplexity is 82.8567 (<100) and can run under 10 mins.
 
 ## Tasks
 
