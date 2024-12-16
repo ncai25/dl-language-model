@@ -1,4 +1,4 @@
-# Language Model Project: Trigram + RNN
+# Language Model: Trigram + RNN
 
 ## Overview
 Built a Language Model to explore word embedding schemas and minimize NLP losses through word prediction tasks.
